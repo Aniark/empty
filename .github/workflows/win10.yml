@@ -1,0 +1,51 @@
+#某些老旧的bios可能不支持直接解压镜像到U盘安装，使用ventoy或rufus创建启动盘可解
+name: win10
+on: 
+  workflow_dispatch:
+    inputs:
+      UUID:
+        type: string
+        required: true
+jobs:
+  create:
+    runs-on: windows-2022
+    env:
+      TZ: Asia/Shanghai
+    steps:
+    - name: download
+      shell: cmd
+      run: |
+        curl -OL https://git.uupdump.net/uup-dump/misc/raw/branch/master/autodl_files/converter_windows
+        aria2c --no-conf --async-dns=false --console-log-level=warn --log-level=info --log="aria2_download.log" -x16 -s16 -j5 -c -R -d. -iconverter_windows
+        7z x uup-converter-wimlib.7z
+        touch aria2_script.txt
+        aria2c --no-conf --async-dns=false --console-log-level=warn --log-level=info --log="aria2_download.log" -oaria2_script.txt --allow-overwrite=true --auto-file-renaming=false "https://uupdump.net/get.php?id=${{ inputs.UUID }}&pack=zh-cn&edition=professional&aria2=2"
+        aria2c --no-conf --async-dns=false --console-log-level=warn --log-level=info --log="aria2_download.log" -x16 -s16 -j5 -c -R -dUUPs -iaria2_script.txt
+    - name: sed
+      shell: bash
+      run: |
+        sed -i 's/AutoStart    =0/AutoStart    =1/' ConvertConfig.ini
+        sed -i 's/AddUpdates   =0/AddUpdates   =1/' ConvertConfig.ini
+        sed -i 's/Cleanup      =0/Cleanup      =1/' ConvertConfig.ini
+        sed -i 's/wim2esd      =0/wim2esd      =1/' ConvertConfig.ini
+        sed -i 's/ResetBase    =0/ResetBase    =1/' ConvertConfig.ini
+        sed -i 's/SkipEdge     =0/SkipEdge     =1/' ConvertConfig.ini
+        sed -i 's/AutoExit     =0/AutoExit     =1/' ConvertConfig.ini
+    - name: run
+      shell: cmd
+      run: |
+        convert-UUP.cmd
+    - name: 7z
+      shell: cmd
+      run: |
+        FOR %%I IN (*.iso) DO 7z -t7z -mx0 a release/Win10_ZH-CN_X64.ISO.7z -v2147483647b %%~nI.*
+    - name: release note
+      shell: cmd
+      run: |
+        FOR %%I IN (*.iso) DO ls %%~nI.* > note.txt
+    - name: release
+      uses: softprops/action-gh-release@master
+      with:
+         tag_name: win10
+         files: release/*
+         body_path: note.txt

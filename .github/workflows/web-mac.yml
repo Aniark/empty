@@ -1,0 +1,11 @@
+name: web-mac
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: macos-latest
+    env:
+      CREDENTIALS: ${{ secrets.CREDENTIALS }}
+    steps:
+    - uses: fawazahmed0/action-debug@main
+      with:
+        credentials: "${{ secrets.CREDENTIALS }}"

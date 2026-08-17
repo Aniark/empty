@@ -1,0 +1,75 @@
+name: auto-win
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: CLANG64
+        update: true
+        path-type: minimal
+        install: >-
+          pactoys
+          make
+        pacboy: >-
+          gcc-compat
+          7zip
+          git
+          cmake
+          nasm
+          pkg-config
+    - name: check env
+      run: |
+        env
+    - name: x264
+      run: |
+        git clone https://code.videolan.org/videolan/x264.git
+        cd x264
+        ./configure --disable-cli --enable-static --prefix=$MSYSTEM_PREFIX
+        make -j`nproc` install
+    - name: ffnvcodec
+      run: |
+        git clone https://github.com/FFmpeg/nv-codec-headers.git
+        cd nv-codec-headers
+        make -j`nproc` install PREFIX=$MSYSTEM_PREFIX
+    - name: AudioToolboxWrapper
+      run: |
+        git clone https://github.com/dantmnf/AudioToolboxWrapper.git
+        cd AudioToolboxWrapper
+        cmake -G "Unix Makefiles" --install-prefix $MSYSTEM_PREFIX -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+        make -j`nproc` install
+    - name: zlib
+      run: |
+        git clone https://github.com/madler/zlib.git
+        cd zlib
+        ./configure --static --prefix=$MSYSTEM_PREFIX
+        make -j`nproc` install
+    - name: ffmpeg
+      run: |
+        git clone https://github.com/FFmpeg/FFmpeg ffmpeg --depth 1
+        cd ffmpeg
+        sed -i 's/check_apple_framework AudioToolbox/check_apple_framework/g' configure
+        ./configure \
+        --enable-shared --disable-ffplay --disable-ffprobe --disable-doc --disable-debug \
+        --pkg-config=pkg-config \
+        --arch=amd64 --target-os=mingw64 \
+        --prefix=$GITHUB_WORKSPACE \
+        --enable-audiotoolbox --extra-libs=-lAudioToolboxWrapper \
+        --enable-ffnvcodec \
+        --enable-gpl --enable-libx264 \
+        --enable-zlib \
+        --extra-ldflags=-static
+        make -j`nproc` install
+    - name: 7z
+      run: |
+        rm -rf bin/*.lib
+        7z a ff-win.7z ./bin/*
+    - name: release
+      uses: softprops/action-gh-release@master
+      with:
+         tag_name: aac_at
+         files: ff-win.7z

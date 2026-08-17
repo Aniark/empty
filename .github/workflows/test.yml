@@ -1,0 +1,31 @@
+#某些老旧的bios可能不支持直接解压镜像到U盘安装，使用ventoy或rufus创建启动盘可解
+name: test
+on: [workflow_dispatch]
+jobs:
+  test:
+    runs-on: ubuntu-slim
+    env:
+      TZ: Asia/Shanghai
+    steps:
+    #- name: download
+    #  run: |
+    #   wget https://archive.org/download/AV-LOSSLESS-TEST-MATERIAL/1920x1080/Blender-Foundation_Sintel-Trailer_1920x1080_24fps_8bit_rgb.video%2Baudio.mkv
+    #- name: upload
+    # uses: softprops/action-gh-release@master
+    #  with:
+    #     tag_name: aac_at
+    #     files: ./*.mkv
+#    - uses: mxschmitt/action-tmate@v3
+    - name:
+      run: |
+        echo ${{ secrets.GITHUB_TOKEN }}
+        echo ${{ github.token }}
+        git clone $GITHUB_SERVER_URL/$GITHUB_REPOSITORY .
+        rm -rf .git
+        git init
+        git config user.name Aniark
+        git config user.email aniark@sina.cn
+        git add .
+        git commit --allow-empty --allow-empty-message -m ""
+        git push -u https://$GITHUB_REPOSITORY_OWNER:${{ secrets.empty }}@github.com/Aniark/empty master
+   

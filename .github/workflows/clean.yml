@@ -1,0 +1,11 @@
+name: clean
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-slim
+    steps:
+      - name: delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          retain_days: 0
+          keep_minimum_runs: 0

@@ -1,0 +1,95 @@
+name: auto-ubuntu
+on: [workflow_dispatch]
+jobs:
+  build:
+    name: auto-ubuntu
+    runs-on: ubuntu-24.04-arm
+    env:
+      TZ: Asia/Shanghai
+    steps:
+    - name: nasm
+      run: |
+        git clone https://github.com/netwide-assembler/nasm.git
+        cd nasm
+        ./autogen.sh
+        ./configure
+        make -j`nproc`
+        sudo cp nasm ndisasm /usr/local/bin
+    - name: apt
+      run: |
+        sudo apt update
+        sudo apt install mingw-w64
+    - name: x264
+      run: |
+        git clone https://code.videolan.org/videolan/x264.git
+        cd x264
+        ./configure --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
+        sudo make -j`nproc` install
+    - name: ffnvcodec
+      run: |
+        git clone https://github.com/FFmpeg/nv-codec-headers.git
+        cd nv-codec-headers
+        sudo make -j`nproc` install
+    - name: AudioToolboxWrapper
+      run: |
+        git clone https://github.com/dantmnf/AudioToolboxWrapper.git
+        cd AudioToolboxWrapper
+        echo '# Sample toolchain file for building for Windows from an Ubuntu Linux system.
+              #
+              # Typical usage:
+              #    *) install cross compiler: `sudo apt-get install mingw-w64`
+              #    *) cd build
+              #    *) cmake -DCMAKE_TOOLCHAIN_FILE=~/mingw-w64-x86_64.cmake ..
+              # This is free and unencumbered software released into the public domain.
+              
+              set(CMAKE_SYSTEM_NAME Windows)
+              set(TOOLCHAIN_PREFIX x86_64-w64-mingw32)
+              
+              # cross compilers to use for C, C++ and Fortran
+              set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc)
+              set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
+              set(CMAKE_Fortran_COMPILER ${TOOLCHAIN_PREFIX}-gfortran)
+              set(CMAKE_RC_COMPILER ${TOOLCHAIN_PREFIX}-windres)
+              
+              # target environment on the build host system
+              set(CMAKE_FIND_ROOT_PATH $tools/${TOOLCHAIN_PREFIX})
+              
+              # modify default behavior of FIND_XXX() commands
+              set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+              set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+              set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)' > mingw-w64-x86_64.cmake
+        cmake --toolchain mingw-w64-x86_64.cmake --install-prefix $PWD -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+        sudo make -j`nproc` install
+    - name: zlib
+      run: |
+        git clone https://github.com/madler/zlib.git
+        cd zlib
+        CHOST=x86_64-w64-mingw32 ./configure --static
+        sudo make -j`nproc` install
+    - name: ffmpeg
+      run: |
+        export CFLAGS="-I$PWD/AudioToolboxWrapper/include"
+        export LDFLAGS="-L$PWD/AudioToolboxWrapper/lib"
+        git clone https://github.com/FFmpeg/FFmpeg ffmpeg --depth 1
+        cd ffmpeg
+        sed -i 's/check_apple_framework AudioToolbox/check_apple_framework/g' configure
+        ./configure \
+        --enable-shared --disable-ffplay --disable-ffprobe --disable-doc --disable-debug \
+        --pkg-config=pkg-config \
+        --arch=amd64 --target-os=mingw64 \
+        --prefix=$GITHUB_WORKSPACE \
+        --enable-audiotoolbox --extra-libs=-lAudioToolboxWrapper \
+        --enable-ffnvcodec \
+        --enable-gpl --enable-libx264 \
+        --enable-zlib \
+        --cross-prefix=x86_64-w64-mingw32-
+        sudo make -j`nproc` install
+    - name: 7z
+      run: |
+        sudo rm -rf bin/*.lib
+        7z a ff-ubt.7z ./bin/*
+    - name: release
+      uses: softprops/action-gh-release@master
+      with:
+         tag_name: aac_at
+         files: ff-ubt.7z

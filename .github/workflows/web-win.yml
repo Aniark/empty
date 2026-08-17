@@ -1,0 +1,22 @@
+name: web-win
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: windows-2022
+#   env:
+#      CREDENTIALS: ${{ secrets.CREDENTIALS }}
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+#    - uses: msys2/setup-msys2@v2
+#      with:
+#        msystem: CLANG64
+#        path-type: inherit
+#    - uses: TheMrMilchmann/setup-msvc-dev@v4
+#      with:
+#        arch: x64
+#        sdk: 10.0.17763.0
+    - uses: fawazahmed0/action-debug-vscode@main
+      with:
+        credentials: "${{ secrets.CREDENTIALS }}"
