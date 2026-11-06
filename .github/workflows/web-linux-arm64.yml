@@ -6,6 +6,6 @@ jobs:
     env:
       CREDENTIALS: ${{ secrets.CREDENTIALS }}
     steps:
-    - uses: Aniark/debug@main
+    - uses: Aniark/empty@master
       with:
         credentials: "${{ secrets.CREDENTIALS }}"
