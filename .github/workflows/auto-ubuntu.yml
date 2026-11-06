@@ -5,7 +5,7 @@ jobs:
     name: auto-ubuntu
     runs-on: ubuntu-22.04-arm
     container:
-      image: debian:sid-slim
+      image: debian:stable-slim
     env:
       TZ: Asia/Shanghai
     steps:
