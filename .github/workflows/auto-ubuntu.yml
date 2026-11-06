@@ -27,8 +27,7 @@ jobs:
         echo "$GITHUB_PATH"
     - name: x264
       run: |
-        echo "tools=$PWD/tools" >> "$GITHUB_ENV"
-        echo "$PWD/tools/bin" >> "$GITHUB_PATH"
+        PATH="$PATH:$PWD/tools/bin"
         git clone https://code.videolan.org/videolan/x264.git
         cd x264
         ./configure --disable-asm --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
