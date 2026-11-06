@@ -31,7 +31,7 @@ jobs:
         echo "$PWD/tools/bin" >> "$GITHUB_PATH"
         git clone https://code.videolan.org/videolan/x264.git
         cd x264
-        ./configure --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
+        ./configure --disable-asm --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
         sudo make -j`nproc` install
     - name: ffnvcodec
       run: |
