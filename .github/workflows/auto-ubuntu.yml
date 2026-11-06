@@ -25,8 +25,8 @@ jobs:
         wget -q https://github.com/mstorsjo/llvm-mingw/releases/download/nightly/llvm-mingw-nightly-ucrt-ubuntu-22.04-aarch64.tar.xz
         tar xf llvm*.xz; rm *.xz
         mv llvm* tools
-        echo "tools=$PWD/tools" >> "$GITHUB_ENV"
-        echo "$PWD/tools/bin" >> "$GITHUB_PATH"
+        tools="$PATH:$PWD/tools"
+        PATH="$PATH:$PWD/tools/bin"
         x86_64-w64-mingw32-gcc -v
     - name: x264
       run: |
