@@ -20,6 +20,8 @@ jobs:
     - name: llvm
       run: |   
         pwd
+        apt update
+        apt install g++ make pkgconf wget 7z
         wget -q https://github.com/mstorsjo/llvm-mingw/releases/download/nightly/llvm-mingw-nightly-ucrt-ubuntu-22.04-`uname -m`.tar.xz
         tar xf llvm*.xz; rm *.xz
         mv llvm* tools
