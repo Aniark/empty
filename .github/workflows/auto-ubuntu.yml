@@ -29,7 +29,7 @@ jobs:
         git clone https://code.videolan.org/videolan/x264.git
         cd x264
         ./configure --disable-asm --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
-        sudo make -j`nproc` install
+        make -j`nproc`
     - name: ffnvcodec
       run: |
         git clone https://github.com/FFmpeg/nv-codec-headers.git
