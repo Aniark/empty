@@ -27,7 +27,6 @@ jobs:
         mv llvm* tools
         tools="$PATH:$PWD/tools"
         PATH="$PATH:$PWD/tools/bin"
-        x86_64-w64-mingw32-gcc -h
     - name: x264
       run: |
         git clone https://code.videolan.org/videolan/x264.git
