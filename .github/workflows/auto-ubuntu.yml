@@ -29,9 +29,6 @@ jobs:
         echo "$PWD/tools/bin" >> "$GITHUB_PATH"
     - name: x264
       run: |
-        tools="$PATH:$PWD/tools"
-        PATH="$PATH:$PWD/tools/bin"
-        x86_64-w64-mingw32-gcc --help
         git clone https://code.videolan.org/videolan/x264.git
         cd x264
         ./configure --disable-asm --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
@@ -76,7 +73,7 @@ jobs:
         git clone https://github.com/madler/zlib.git
         cd zlib
         CHOST=x86_64-w64-mingw32 ./configure --static
-        make -j`nproc`; sudo make install
+        make -j`nproc` install
     - name: ffmpeg
       run: |
         export CFLAGS="-I$PWD/AudioToolboxWrapper/include"
