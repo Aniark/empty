@@ -3,7 +3,7 @@ on: [workflow_dispatch]
 jobs:
   build:
     name: auto-ubuntu
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04-arm
     env:
       TZ: Asia/Shanghai
     steps:
@@ -20,8 +20,8 @@ jobs:
         wget https://github.com/mstorsjo/llvm-mingw/releases/download/nightly/llvm-mingw-nightly-ucrt-ubuntu-22.04-`uname -m`.tar.xz
         tar xf llvm*.xz; rm *.xz
         mv llvm* tools
-        sudo echo "tools=$PWD/tools" >> "$GITHUB_ENV"
-        sudo echo "$PWD/tools/bin" >> "$GITHUB_PATH"
+        echo "tools=$PWD/tools" >> "$GITHUB_ENV"
+        echo "$PWD/tools/bin" >> "$GITHUB_PATH"
     - name: x264
       run: |
         ls -la
@@ -29,7 +29,7 @@ jobs:
         git clone https://code.videolan.org/videolan/x264.git
         cd x264
         ./configure --disable-asm --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
-        make -j`nproc`
+        make -j`nproc` install
     - name: ffnvcodec
       run: |
         git clone https://github.com/FFmpeg/nv-codec-headers.git
