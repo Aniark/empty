@@ -29,7 +29,7 @@ jobs:
         git clone https://code.videolan.org/videolan/x264.git
         cd x264
         ./configure --disable-asm --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
-        make -j`nproc` install
+        make -j`nproc`; sudo make install
     - name: ffnvcodec
       run: |
         git clone https://github.com/FFmpeg/nv-codec-headers.git
@@ -70,7 +70,7 @@ jobs:
         git clone https://github.com/madler/zlib.git
         cd zlib
         CHOST=x86_64-w64-mingw32 ./configure --static
-        sudo make -j`nproc` install
+        make -j`nproc`; sudo make install
     - name: ffmpeg
       run: |
         export CFLAGS="-I$PWD/AudioToolboxWrapper/include"
@@ -88,7 +88,7 @@ jobs:
         --enable-gpl --enable-libx264 \
         --enable-zlib \
         --cross-prefix=x86_64-w64-mingw32-
-        sudo make -j`nproc` install
+        make -j`nproc`; sudo make install
     - name: 7z
       run: |
         sudo rm -rf bin/*.lib
