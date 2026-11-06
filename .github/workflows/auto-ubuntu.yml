@@ -7,14 +7,14 @@ jobs:
     env:
       TZ: Asia/Shanghai
     steps:
-    - name: nasm
-      run: |
-        git clone https://github.com/netwide-assembler/nasm.git
-        cd nasm
-        ./autogen.sh
-        ./configure
-        make -j`nproc`
-        sudo cp nasm ndisasm /usr/local/bin
+   # - name: nasm
+   #   run: |
+   #     git clone https://github.com/netwide-assembler/nasm.git
+   #     cd nasm
+   #     ./autogen.sh
+   #     ./configure
+   #     make -j`nproc`
+   #     sudo cp nasm ndisasm /usr/local/bin
     - name: llvm
       run: |   
         wget https://github.com/mstorsjo/llvm-mingw/releases/download/nightly/llvm-mingw-nightly-ucrt-ubuntu-22.04-`uname -m`.tar.xz
@@ -27,6 +27,8 @@ jobs:
         echo "$GITHUB_PATH"
     - name: x264
       run: |
+        echo "tools=$PWD/tools" >> "$GITHUB_ENV"
+        echo "$PWD/tools/bin" >> "$GITHUB_PATH"
         git clone https://code.videolan.org/videolan/x264.git
         cd x264
         ./configure --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
