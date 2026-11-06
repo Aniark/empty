@@ -23,7 +23,7 @@ jobs:
         echo "tools=$PWD/tools" >> "$GITHUB_ENV"
         echo "$PWD/tools/bin" >> "$GITHUB_PATH"
         sudo cp tools/bin/* /usr/local/bin
-        sudo cp tools/lib/* /usr/local/lib
+        sudo cp -r tools/lib/* /usr/local/lib
     - name: x264
       run: |
         ls -la
