@@ -27,6 +27,7 @@ jobs:
         mv llvm* tools
         echo "tools=$PWD/tools" >> "$GITHUB_ENV"
         echo "$PWD/tools/bin" >> "$GITHUB_PATH"
+        x86_64-w64-mingw32-gcc -v
     - name: x264
       run: |
         git clone https://code.videolan.org/videolan/x264.git
