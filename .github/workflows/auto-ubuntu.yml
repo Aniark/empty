@@ -3,7 +3,7 @@ on: [workflow_dispatch]
 jobs:
   build:
     name: auto-ubuntu
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-24.04
     env:
       TZ: Asia/Shanghai
     steps:
@@ -17,7 +17,7 @@ jobs:
         sudo cp nasm ndisasm /usr/local/bin
     - name: llvm
       run: |   
-        wget https://github.com/mstorsjo/llvm-mingw/releases/download/nightly/llvm-mingw-nightly-ucrt-ubuntu-22.04-aarch64.tar.xz
+        wget https://github.com/mstorsjo/llvm-mingw/releases/download/nightly/llvm-mingw-nightly-ucrt-ubuntu-22.04-`uname -m`.tar.xz
         tar xf llvm*.xz; rm *.xz
         mv llvm* tools
         echo "tools=$PWD/tools" >> "$GITHUB_ENV"
