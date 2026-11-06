@@ -15,10 +15,13 @@ jobs:
         ./configure
         make -j`nproc`
         sudo cp nasm ndisasm /usr/local/bin
-    - name: apt
-      run: |
-        sudo apt update
-        sudo apt install mingw-w64
+    - name: llvm
+      run: |   
+        wget https://github.com/mstorsjo/llvm-mingw/releases/download/nightly/llvm-mingw-nightly-ucrt-ubuntu-22.04-aarch64.tar.xz
+        tar xf llvm*.xz; rm *.xz
+        mv llvm* tools
+        echo "tools=$PWD/tools" >> "$GITHUB_ENV"
+        echo "$PWD/tools/bin" >> "$GITHUB_PATH"
     - name: x264
       run: |
         git clone https://code.videolan.org/videolan/x264.git
