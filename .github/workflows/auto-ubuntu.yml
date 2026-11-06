@@ -29,6 +29,7 @@ jobs:
         PATH="$PATH:$PWD/tools/bin"
     - name: x264
       run: |
+        x86_64-w64-mingw32-gcc --help
         git clone https://code.videolan.org/videolan/x264.git
         cd x264
         ./configure --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
