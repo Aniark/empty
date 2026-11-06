@@ -22,8 +22,7 @@ jobs:
         mv llvm* tools
         echo "tools=$PWD/tools" >> "$GITHUB_ENV"
         echo "$PWD/tools/bin" >> "$GITHUB_PATH"
-        sudo echo "tools=$PWD/tools" >> "$GITHUB_ENV"
-        sudo echo "$PWD/tools/bin" >> "$GITHUB_PATH"
+        sudo cp tools/bin/* /usr/local/bin
     - name: x264
       run: |
         ls -la
