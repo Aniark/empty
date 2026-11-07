@@ -75,7 +75,7 @@ jobs:
       run: |
         export CFLAGS="-I$PWD/AudioToolboxWrapper/include"
         export LDFLAGS="-L$PWD/AudioToolboxWrapper/lib"
-        git clone https://github.com/FFmpeg/FFmpeg ffmpeg -b release/9.1 --depth 1
+        git clone https://github.com/FFmpeg/FFmpeg ffmpeg --depth 1
         cd ffmpeg
         sed -i 's/check_apple_framework AudioToolbox/check_apple_framework/g' configure
         ./configure \
@@ -84,7 +84,6 @@ jobs:
         --arch=amd64 --target-os=mingw64 \
         --prefix=$GITHUB_WORKSPACE \
         --enable-audiotoolbox --extra-libs=-lAudioToolboxWrapper \
-        --enable-ffnvcodec \
         --enable-gpl --enable-libx264 \
         --enable-zlib \
         --cross-prefix=x86_64-w64-mingw32-
