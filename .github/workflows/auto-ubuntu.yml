@@ -75,7 +75,7 @@ jobs:
       run: |
         export CFLAGS="-I$PWD/AudioToolboxWrapper/include"
         export LDFLAGS="-L$PWD/AudioToolboxWrapper/lib"
-        git clone https://github.com/FFmpeg/FFmpeg ffmpeg --depth 1
+        git clone https://github.com/FFmpeg/FFmpeg ffmpeg -b release/9.1 --depth 1
         cd ffmpeg
         sed -i 's/check_apple_framework AudioToolbox/check_apple_framework/g' configure
         ./configure \
