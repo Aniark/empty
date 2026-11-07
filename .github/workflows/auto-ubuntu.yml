@@ -14,6 +14,8 @@ jobs:
         wget -q https://github.com/mstorsjo/llvm-mingw/releases/download/nightly/llvm-mingw-nightly-ucrt-ubuntu-22.04-`uname -m`.tar.xz
         tar xf llvm*.xz; rm *.xz
         mv llvm* tools
+        echo "tools=$PWD/tools" >> "$GITHUB_ENV"
+        echo "$PWD/tools/bin" >> "$GITHUB_PATH"
     - name: nasm
       run: |
         git clone https://github.com/netwide-assembler/nasm.git
@@ -28,7 +30,7 @@ jobs:
         cd x264
         ./configure --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64
         make -j`nproc`
-        sudo env "PATH=$GITHUB_WORKSPACE/tools/bin" make -j`nproc` install
+        sudo env "PATH=$PATH" make -j`nproc` install
     - name: ffnvcodec
       run: |
         git clone https://github.com/FFmpeg/nv-codec-headers.git
