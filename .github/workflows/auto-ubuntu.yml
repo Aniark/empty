@@ -4,21 +4,16 @@ jobs:
   build:
     name: auto-ubuntu
     runs-on: ubuntu-22.04-arm
-    container:
-      image: debian:stable-slim
+#    container:
+#      image: debian:stable-slim
     env:
       TZ: Asia/Shanghai
     steps:
     - name: llvm
-      run: |   
-        pwd
-        apt update
-        apt install -y make cmake pkgconf wget 7zip xz-utils git gcc autoconf
+      run: |          
         wget -q https://github.com/mstorsjo/llvm-mingw/releases/download/nightly/llvm-mingw-nightly-ucrt-ubuntu-22.04-`uname -m`.tar.xz
         tar xf llvm*.xz; rm *.xz
         mv llvm* tools
-        echo "tools=$PWD/tools" >> "$GITHUB_ENV"
-        echo "$PWD/tools/bin" >> "$GITHUB_PATH"
     - name: nasm
       run: |
         git clone https://github.com/netwide-assembler/nasm.git
@@ -32,7 +27,7 @@ jobs:
         git clone https://code.videolan.org/videolan/x264.git
         cd x264
         ./configure --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
-        make -j`nproc` install
+        sudo "PATH=$GITHUB_WORKSPACE/tools/bin" make -j`nproc` install
     - name: ffnvcodec
       run: |
         git clone https://github.com/FFmpeg/nv-codec-headers.git
