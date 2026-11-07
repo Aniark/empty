@@ -27,12 +27,12 @@ jobs:
         git clone https://code.videolan.org/videolan/x264.git
         cd x264
         ./configure --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
-        sudo "PATH=$GITHUB_WORKSPACE/tools/bin" make -j`nproc` install
+        sudo env "PATH=$GITHUB_WORKSPACE/tools/bin" make -j`nproc` install
     - name: ffnvcodec
       run: |
         git clone https://github.com/FFmpeg/nv-codec-headers.git
         cd nv-codec-headers
-        make -j`nproc` install
+        sudo make -j`nproc` install
     - name: AudioToolboxWrapper
       run: |
         git clone https://github.com/dantmnf/AudioToolboxWrapper.git
@@ -62,13 +62,13 @@ jobs:
               set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
               set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)' > mingw-w64-x86_64.cmake
         cmake --toolchain mingw-w64-x86_64.cmake --install-prefix $PWD -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-        make -j`nproc` install
+        sudo make -j`nproc` install
     - name: zlib
       run: |
         git clone https://github.com/madler/zlib.git
         cd zlib
         CHOST=x86_64-w64-mingw32 ./configure --static
-        make -j`nproc` install
+        sudo env "PATH=$GITHUB_WORKSPACE/tools/bin" make -j`nproc` install
     - name: ffmpeg
       run: |
         export CFLAGS="-I$PWD/AudioToolboxWrapper/include"
@@ -86,7 +86,7 @@ jobs:
         --enable-gpl --enable-libx264 \
         --enable-zlib \
         --cross-prefix=x86_64-w64-mingw32-
-        make -j`nproc` install
+        sudo env "PATH=$GITHUB_WORKSPACE/tools/bin" make -j`nproc` install
     - name: 7z
       run: |
         rm -rf bin/*.lib
