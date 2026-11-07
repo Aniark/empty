@@ -28,8 +28,7 @@ jobs:
       run: |
         git clone https://code.videolan.org/videolan/x264.git
         cd x264
-        ./configure --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64
-        make -j`nproc`
+        ./configure --disable-cli --enable-static --cross-prefix=x86_64-w64-mingw32- --host=mingw64 
         sudo env "PATH=$PATH" make -j`nproc` install
     - name: ffnvcodec
       run: |
@@ -71,7 +70,7 @@ jobs:
         git clone https://github.com/madler/zlib.git
         cd zlib
         CHOST=x86_64-w64-mingw32 ./configure --static
-        sudo env "PATH=$GITHUB_WORKSPACE/tools/bin" make -j`nproc` install
+        sudo env "PATH=$PATH" make -j`nproc` install
     - name: ffmpeg
       run: |
         export CFLAGS="-I$PWD/AudioToolboxWrapper/include"
@@ -89,7 +88,7 @@ jobs:
         --enable-gpl --enable-libx264 \
         --enable-zlib \
         --cross-prefix=x86_64-w64-mingw32-
-        sudo env "PATH=$GITHUB_WORKSPACE/tools/bin" make -j`nproc` install
+        sudo env "PATH=$PATH" make -j`nproc` install
     - name: 7z
       run: |
         rm -rf bin/*.lib
