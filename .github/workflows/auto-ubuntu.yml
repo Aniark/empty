@@ -11,8 +11,8 @@ jobs:
     steps:
     - name: llvm
       run: |          
-        # wget -q https://github.com/mstorsjo/llvm-mingw/releases/download/nightly/llvm-mingw-nightly-ucrt-ubuntu-22.04-`uname -m`.tar.xz
-        wget https://github.com/mstorsjo/llvm-mingw/releases/download/20261104/llvm-mingw-20261104-ucrt-ubuntu-22.04-aarch64.tar.xz
+        wget -q https://github.com/mstorsjo/llvm-mingw/releases/download/nightly/llvm-mingw-nightly-ucrt-ubuntu-22.04-`uname -m`.tar.xz
+        # wget -q https://github.com/mstorsjo/llvm-mingw/releases/download/20261104/llvm-mingw-20261104-ucrt-ubuntu-22.04-aarch64.tar.xz
         tar xf llvm*.xz; rm *.xz
         mv llvm* tools
         echo "tools=$PWD/tools" >> "$GITHUB_ENV"
@@ -92,8 +92,8 @@ jobs:
         sudo env "PATH=$PATH" make -j`nproc` install
     - name: 7z
       run: |
-        rm -rf bin/*.lib
-        7z a ff-ubt.7z ./bin/*
+        # sudo rm -rf bin/*.lib
+        7z a ff-ubt.7z ./bin/*.exe ./bin/*.dll 
     - name: release
       uses: softprops/action-gh-release@master
       with:
