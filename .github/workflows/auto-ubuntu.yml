@@ -85,6 +85,7 @@ jobs:
         --prefix=$GITHUB_WORKSPACE \
         --enable-audiotoolbox --extra-libs=-lAudioToolboxWrapper \
         --enable-gpl --enable-libx264 \
+        --enable-ffnvcodec \
         --enable-zlib \
         --cross-prefix=x86_64-w64-mingw32-
         sudo env "PATH=$PATH" make -j`nproc` install
